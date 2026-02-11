@@ -9,6 +9,8 @@ private:
 	// 현재 블록의 좌표
 	struct position { int x, y; };
 	position curPos;
+	// 충돌 감지
+	bool checkCollision(int nextX, int nextY);
 public:
 	// 생성자
 	Tetris();
