@@ -17,6 +17,13 @@ enum TetrominoType {
 	MINO_L,
 	MINO_MAX
 };
+
+enum curRotation {
+    ROT_0 = 0,
+    ROT_90,
+    ROT_180,
+    ROT_270
+};
 class Tetris {
 private:
 	const int blockShapes[MINO_MAX][4][4] = {
@@ -81,6 +88,10 @@ private:
 	// 충돌 감지
 	bool checkCollision(int nextX, int nextY);
 	int curBlockType;
+	int nextBlockType;
+    int curRotation = 0;
+    int nowBlock[4][4];
+    int tempBlock[4][4];
 public:
 	int timer = 0;
 	int lockTimer = 0;
@@ -100,5 +111,7 @@ public:
 	void blockFix();
 	// 외부에서 점수 값을 수정
 	bool touchBottom();
-	void gameOver();
+	void rotateBlock();
+	bool checkCollisionAfterRotate();
+    void gameOver();
 };

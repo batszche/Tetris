@@ -26,6 +26,7 @@ int main() {
 					game.blockMove(0, 1);
 				}
 			}
+			if (key == 'f') game.rotateBlock();
 		}
 		game.checkLineFull();
 		game.timer++;
