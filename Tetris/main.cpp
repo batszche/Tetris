@@ -5,8 +5,21 @@
 using namespace std;
 
 int main() {
+	srand((unsigned int)time(NULL));
 	Tetris game;
 	while (true) {
+		if (game.ifGameOver == true) {
+			system("cls");
+			game.setCursor(0, 10);
+			cout << "====================" << endl;
+			cout << "      GAME OVER     " << endl;
+			cout << "    REPLAY? (Y/N)   " << endl;
+			cout << "====================" << endl;
+			int key = _getch();
+			if (key == 'y') game.resetGame();
+			if (key == 'n')	exit(0);
+			continue;
+		}
 		if (game.timer == 50) {
 			game.blockMove(0, 1);
 			game.timer = 0;
@@ -26,7 +39,8 @@ int main() {
 					game.blockMove(0, 1);
 				}
 			}
-			if (key == 'f') game.rotateBlock();
+			if (key == 'f') game.rotateBlock(false);
+			if (key == 'r') game.rotateBlock(true);
 		}
 		game.checkLineFull();
 		game.timer++;

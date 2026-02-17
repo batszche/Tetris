@@ -92,7 +92,10 @@ private:
     int curRotation = 0;
     int nowBlock[4][4];
     int tempBlock[4][4];
+    bool isClockwise;
 public:
+    void setColor(int color);
+    bool ifGameOver;
 	int timer = 0;
 	int lockTimer = 0;
 	// 생성자
@@ -111,7 +114,10 @@ public:
 	void blockFix();
 	// 외부에서 점수 값을 수정
 	bool touchBottom();
-	void rotateBlock();
-	bool checkCollisionAfterRotate();
+	void rotateBlock(bool isClockwise);
+	bool checkRotationCollision(int nextX, int nextY, bool isClockwise);
     void gameOver();
+    void resetGame();
+    void setCursor(int x, int y);
+
 };
