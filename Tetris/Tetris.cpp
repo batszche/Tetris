@@ -7,8 +7,36 @@
 using namespace std;
 
 Tetris::Tetris() {
-	// 벽 배열 초기화// position curPos = { 0, 0 }; // 주의: 여기서 새로 선언하면 멤버 변수가 아니라 '지역 변수'가 됩니다.
-    // curPos = { 5, 0 }; // 헤더에 선언된 멤버 변수를 그대로 쓰세요.
+
+
+	system("cls");
+	int centerX = (boardWidth / 2) - 10; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
+	int centerY = (boardHeight / 2) - 2; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
+	while (true) {
+		cout << "보드의 가로 크기를 입력하세요. (5~30)";
+		cin >> boardWidth;
+		if (cin.fail() || boardWidth < 5 || boardWidth >30) {
+			cout << "5에서 30 사이의 숫자를 입력해 주세요." << endl;
+			cin.clear();
+			cin.ignore(256, '\n');
+		}
+		else break;
+	}
+	while (true) {
+		cout << "보드의 세로 크기를 입력하세요. (15~45)";
+		cin >> boardHeight;
+
+		if (cin.fail() || boardHeight < 15 || boardHeight > 45) {
+			cout << "15에서 30 사이의 숫자를 입력해 주세요." << endl;
+			cin.clear();
+			cin.ignore(256, '\n');
+		}
+		else break;
+	}
+	BOARD = new int* [boardHeight];
+	for (int i = 0; i < boardHeight; i++) {
+		BOARD[i] = new int[boardWidth];
+	}
 	resetGame();
 }
 
@@ -25,8 +53,8 @@ void Tetris::setCursor(int x, int y) {
 // 초기화
 void Tetris::draw() {
 	setCursor(0, 0);
-	for (int y = 0; y < 22; y++) {
-		for (int x = 0; x < 12; x++) {
+	for (int y = 0; y < boardHeight; y++) {
+		for (int x = 0; x < boardWidth; x++) {
 			bool isDrawn = false;
 			if (y >= curPos.y && y <= curPos.y + 3 && x >= curPos.x && x <= curPos.x + 3) {
 				if (nowBlock[y - curPos.y][x - curPos.x] == 1) {
@@ -134,11 +162,11 @@ void Tetris::blockFix() {
 // 4. 점수를 추가한다.
 void Tetris::lineClear(int lineY) {
 	for (int y = lineY; y > 1; y--) {
-		for (int x = 1; x < 11; x++) {
+		for (int x = 1; x < boardWidth; x++) {
 			BOARD[y][x] = BOARD[y - 1][x];
 		}
 	}
-	for (int x = 1; x < 11; x++) {
+	for (int x = 1; x < boardWidth; x++) {
 		BOARD[0][x] = EMPTY;
 	}
 	score++;
@@ -146,7 +174,7 @@ void Tetris::lineClear(int lineY) {
 
 // 한 줄의 모든 요소가 FIXEDBLOCK으로 구성되어 있는가?
 bool Tetris::ifLineFull(int lineY) {
-	for (int x = 1; x < 11; x++) {
+	for (int x = 1; x < boardWidth; x++) {
 		if (BOARD[lineY][x] == EMPTY) return false;
 	}
 	return true;
@@ -158,7 +186,7 @@ bool Tetris::ifLineFull(int lineY) {
 // 3. 줄 안에 빈 칸이 있으면 false, 모두 FIXEDBLOCK이면 true
 // 모든 줄에 대해 실시간 검사- 한 프레임마다 한 번씩
 void Tetris::checkLineFull() {
-	for (int y = 0; y < 21; y++) {
+	for (int y = 0; y < boardHeight-1; y++) {
 		if (ifLineFull(y) == true) {
 			lineClear(y);
 			y--;
@@ -230,13 +258,26 @@ void Tetris::rotateBlock(bool isClockwise) {
 	}
 }
 void Tetris::gameOver() {
+	system("cls");
+	int centerX = (boardWidth / 2) - 10; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
+	int centerY = (boardHeight / 2); // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
+
+	setCursor(centerX * 2, centerY);
+	cout << "====================" << endl;
+	setCursor(centerX * 2, centerY+1);
+	cout << "      GAME OVER     " << endl;
+	setCursor(centerX * 2, centerY+2);
+	cout << "    REPLAY? (Y/N)   " << endl;
+	setCursor(centerX * 2, centerY+3);
+	cout << "====================" << endl;
 }
 
 void Tetris::resetGame() {
+
 	ifGameOver = false;
-	for (int y = 0; y < 22; y++) {
-		for (int x = 0; x < 12; x++) {
-			if (x == 0 || x == 11 || y == 21)
+	for (int y = 0; y < boardHeight; y++) {
+		for (int x = 0; x < boardWidth; x++) {
+			if (x == 0 || x == boardWidth-1 || y == boardHeight-1)
 			{
 				BOARD[y][x] = 1;
 			}
