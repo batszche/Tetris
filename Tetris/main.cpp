@@ -9,12 +9,7 @@ int main() {
 	Tetris game;
 	while (true) {
 		if (game.ifGameOver == true) {
-			system("cls");
-			game.setCursor(0, 10);
-			cout << "====================" << endl;
-			cout << "      GAME OVER     " << endl;
-			cout << "    REPLAY? (Y/N)   " << endl;
-			cout << "====================" << endl;
+			game.gameOver();
 			int key = _getch();
 			if (key == 'y') game.resetGame();
 			if (key == 'n')	exit(0);

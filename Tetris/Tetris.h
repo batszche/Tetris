@@ -81,7 +81,9 @@ private:
 	// 총 점수
 	int score;
 	// 보드의 크기
-	int BOARD[22][12];
+	int** BOARD;
+	int boardWidth;
+    int boardHeight;
 	// 현재 블록의 좌표
 	struct position { int x, y; };
 	position curPos;
