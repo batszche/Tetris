@@ -110,4 +110,7 @@ public:
     void resetGame();
     void setCursor(int x, int y);
 
+    //
+    void resizeBoard(int boardWidth, int boardHeight);
+
 };
