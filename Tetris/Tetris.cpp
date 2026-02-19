@@ -3,20 +3,17 @@
 #include <conio.h>
 #include <ctime>
 #include <cstdlib>
+#include <stdexcept>
 #include "Tetris.h"
 using namespace std;
 
 Tetris::Tetris() {
-
-
 	system("cls");
-	int centerX = (boardWidth / 2) - 10; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
-	int centerY = (boardHeight / 2) - 2; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
 	while (true) {
-		cout << "보드의 가로 크기를 입력하세요. (5~30)";
+		cout << "보드의 가로 크기를 입력하세요. (12~30)";
 		cin >> boardWidth;
-		if (cin.fail() || boardWidth < 5 || boardWidth >30) {
-			cout << "5에서 30 사이의 숫자를 입력해 주세요." << endl;
+		if (cin.fail() || boardWidth < 12 || boardWidth > 30) {
+			cout << "12에서 30 사이의 숫자를 입력해 주세요." << endl;
 			cin.clear();
 			cin.ignore(256, '\n');
 		}
@@ -50,7 +47,6 @@ void Tetris::setCursor(int x, int y) {
 	COORD pos = { (SHORT)x, (SHORT)y };
 	SetConsoleCursorPosition(hConsole, pos);
 }
-// 초기화
 void Tetris::draw() {
 	setCursor(0, 0);
 	for (int y = 0; y < boardHeight; y++) {
@@ -78,7 +74,7 @@ void Tetris::draw() {
 				}
 			}
 		}
-		cout << "          " << endl ;
+		cout << "                                    " << endl ;
 	}
 	setColor(7);
 	cout << endl << "현재 점수 : " << score;
@@ -137,14 +133,13 @@ void Tetris::blockFix() {
 				BOARD[curPos.y + blockY][curPos.x + blockX] = FIXEDBLOCK;
 		}
 	}
-	curPos.x = 3;
+	curPos.x = boardWidth /2 -2;
 	curPos.y = 0;
 	curBlockType = nextBlockType;
 	nextBlockType = rand() % MINO_MAX;
 	for (int blockY = 0; blockY < 4; blockY++) {
 		for (int blockX = 0; blockX < 4; blockX++) {
 			nowBlock[blockY][blockX] = blockShapes[curBlockType][blockY][blockX];
-			tempBlock[blockY][blockX] = blockShapes[curBlockType][blockY][blockX];
 		}
 	}
 	if (checkCollision(curPos.x, curPos.y) == true) {
@@ -154,12 +149,6 @@ void Tetris::blockFix() {
 }
 
 
-
-// 한 줄 지우기 함수
-// 1. 모두 FIXEDBLOCK으로 채워진 y번째 행을 y-1번째행의 배열로 바꾼다.
-// 2. y번째 행에서 2번째 행까지 윗줄로 진행하며 위 작업을 반복한다.
-// 3. 1번째 행은 EMPTY로 채운다.
-// 4. 점수를 추가한다.
 void Tetris::lineClear(int lineY) {
 	for (int y = lineY; y > 1; y--) {
 		for (int x = 1; x < boardWidth; x++) {
@@ -172,7 +161,6 @@ void Tetris::lineClear(int lineY) {
 	score++;
 }
 
-// 한 줄의 모든 요소가 FIXEDBLOCK으로 구성되어 있는가?
 bool Tetris::ifLineFull(int lineY) {
 	for (int x = 1; x < boardWidth; x++) {
 		if (BOARD[lineY][x] == EMPTY) return false;
@@ -180,11 +168,6 @@ bool Tetris::ifLineFull(int lineY) {
 	return true;
 }
 
-// 가득 찬 줄 검사
-// 1. 모든 y열에 대해, y열의 모든 x번째 요소에 대해 검사 (이중 for문)
-// 2. 한 줄이 모두 FIXEDBLOCK인지 검사하기
-// 3. 줄 안에 빈 칸이 있으면 false, 모두 FIXEDBLOCK이면 true
-// 모든 줄에 대해 실시간 검사- 한 프레임마다 한 번씩
 void Tetris::checkLineFull() {
 	for (int y = 0; y < boardHeight-1; y++) {
 		if (ifLineFull(y) == true) {
@@ -223,14 +206,6 @@ bool Tetris::checkRotationCollision(int nextX, int nextY, bool isClockwise) {
 	return false;
 }
 
-// 회전 충돌 검사 수행할 함수 
-// 미리 가상의 배열을 회전시켜 보고, 가능한지 bool값 출력
-// 가상의 배열 회전하는 법: 
-//bool Tetris::checkCollisionAfterRotate() {
-//	int temp[y][x] = blockShapes[curBlockType][y][x];
-//}
-
-
 void Tetris::rotateBlock(bool isClockwise) {
 	if (!checkRotationCollision(curPos.x, curPos.y, isClockwise)) {
 		int temp[4][4];
@@ -259,21 +234,114 @@ void Tetris::rotateBlock(bool isClockwise) {
 }
 void Tetris::gameOver() {
 	system("cls");
-	int centerX = (boardWidth / 2) - 10; // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
-	int centerY = (boardHeight / 2); // 텍스트의 중앙을 보드의 중앙에 맞추기 위한 계산
+	int centerX = (boardWidth / 2); 
+	int centerY = (boardHeight / 2);
+	for (int y = 0; y < boardHeight; y++) {
+		setColor(4);
+		cout << "◆";
+		if (y == centerY - 3 || y == centerY + 4) {
+			for (int i = 0; i < (boardWidth - 5) / 2; i++) {
+				setColor(7);
+				cout << "□";
+			}
+			for (int i = 0; i < 4; i++) {
+				setColor(14);
+				cout << "=";
+			}
+			if (boardWidth %2 == 1){
+				for (int i = 0; i < (boardWidth - 5) / 2-1; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+			else {
+				for (int i = 0; i < (boardWidth - 5) / 2 ; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+		}
+		else if (y == centerY - 1) {
+			for (int i = 0; i < (boardWidth - 9) / 2; i++) {
+				setColor(7);
+				cout << "□";
+			}
+			setColor(14);
+			cout << "GAME OVER";
+			if (boardWidth % 2 == 1) {
+				for (int i = 0; i < (boardWidth - 9) / 2; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+			else {
+				for (int i = 0; i < (boardWidth - 9) / 2 - 1; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+		}
+		else if (y == centerY + 1) {
+			setColor(2);
+			for (int i = 0; i < (boardWidth - 7) / 2; i++) {
+				setColor(7);
+				cout << "□";
+			}
+			setColor(14);
+			cout << "REPLAY?";
+			if (boardWidth % 2 == 1) {
+				for (int i = 0; i < (boardWidth - 7) / 2; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+			else {
+				for (int i = 0; i < (boardWidth - 7) / 2 - 1; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+		}
+		else if (y == centerY + 2) {
+			setColor(2);
+			for (int i = 0; i < (boardWidth - 7) / 2; i++) {
+				setColor(7);
+				cout << "□";
+			}
+			setColor(14);
+			cout << "(Y / N)";
 
-	setCursor(centerX * 2, centerY);
-	cout << "====================" << endl;
-	setCursor(centerX * 2, centerY+1);
-	cout << "      GAME OVER     " << endl;
-	setCursor(centerX * 2, centerY+2);
-	cout << "    REPLAY? (Y/N)   " << endl;
-	setCursor(centerX * 2, centerY+3);
-	cout << "====================" << endl;
+			if (boardWidth % 2 == 1) {
+				for (int i = 0; i < (boardWidth - 7) / 2; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+			else {
+				for (int i = 0; i < (boardWidth - 7) / 2 - 1; i++) {
+					setColor(7);
+					cout << "□";
+				}
+			}
+		}
+		else if (y == boardHeight-1) {
+			for (int i = 0; i < boardWidth-2; i++) {
+				cout << "◆";
+			}
+		}
+		else {
+			for (int i = 0; i < boardWidth - 2; i++) {
+				setColor(7);
+				cout << "□";
+			}
+		}
+		setColor(4);
+		cout << "◆";
+		cout << "                           " << endl;
+	}
 }
 
 void Tetris::resetGame() {
-
 	ifGameOver = false;
 	for (int y = 0; y < boardHeight; y++) {
 		for (int x = 0; x < boardWidth; x++) {
@@ -285,21 +353,22 @@ void Tetris::resetGame() {
 		}
 	}
 
-	// 변수 세팅: 점수 및 블록 위치, 블록 종류
-	// curBlockType = MINO_J;
-	// 현재 블록 상태 변수curBlockType을 랜덤으로 뽑기/blockfix 이후 랜덤으로 새로 뽑기 / 미리 뽑기
-
-	curPos = { 3, 0 };
+	curPos = { boardWidth /2 -2, 0 };
 	score = 0;
 	curBlockType = rand() % MINO_MAX;
 	nextBlockType = rand() % MINO_MAX;
 	for (int blockY = 0; blockY < 4; blockY++) {
 		for (int blockX = 0; blockX < 4; blockX++) {
 			nowBlock[blockY][blockX] = blockShapes[curBlockType][blockY][blockX];
-			tempBlock[blockY][blockX] = blockShapes[curBlockType][blockY][blockX];
 		}
 	}
 }
 Tetris::~Tetris() {
+	for (int i = 0; i <boardHeight;i++){
+		delete[] BOARD[i];
+	}
 
+	delete[] BOARD;
+
+	BOARD = nullptr;
 } 

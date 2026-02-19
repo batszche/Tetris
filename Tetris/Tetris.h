@@ -78,43 +78,31 @@ private:
         }
     };
 	
-	// 총 점수
 	int score;
-	// 보드의 크기
 	int** BOARD;
 	int boardWidth;
     int boardHeight;
-	// 현재 블록의 좌표
 	struct position { int x, y; };
 	position curPos;
-	// 충돌 감지
 	bool checkCollision(int nextX, int nextY);
 	int curBlockType;
 	int nextBlockType;
     int curRotation = 0;
     int nowBlock[4][4];
     int tempBlock[4][4];
-    bool isClockwise;
 public:
+    Tetris();
+    ~Tetris();
     void setColor(int color);
     bool ifGameOver;
 	int timer = 0;
 	int lockTimer = 0;
-	// 생성자
-	Tetris();
-	// 소멸자
-	~Tetris();
-	// 테트리스 보드 그리기
 	void draw();
 	bool ifLineFull(int lineY);
-	// 열 지우기
 	void lineClear(int lineY); 
 	void checkLineFull();
-	// 블록 이동
 	void blockMove(int dx, int dy);
-	// 블록 고정
 	void blockFix();
-	// 외부에서 점수 값을 수정
 	bool touchBottom();
 	void rotateBlock(bool isClockwise);
 	bool checkRotationCollision(int nextX, int nextY, bool isClockwise);
