@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 enum blockState {
 	EMPTY = 0,
@@ -79,7 +80,8 @@ private:
     };
 	
 	int score;
-	int** BOARD;
+    vector<vector<int>> BOARD;
+
 	int boardWidth;
     int boardHeight;
 	struct position { int x, y; };

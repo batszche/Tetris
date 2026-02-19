@@ -30,10 +30,10 @@ Tetris::Tetris() {
 		}
 		else break;
 	}
-	BOARD = new int* [boardHeight];
-	for (int i = 0; i < boardHeight; i++) {
-		BOARD[i] = new int[boardWidth];
-	}
+
+	BOARD.assign(boardHeight, vector<int>(boardWidth, EMPTY));
+
+
 	resetGame();
 }
 
