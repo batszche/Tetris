@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 
 enum blockState {
 	EMPTY = 0,
@@ -18,12 +19,6 @@ enum TetrominoType {
 	MINO_MAX
 };
 
-enum curRotation {
-    ROT_0 = 0,
-    ROT_90,
-    ROT_180,
-    ROT_270
-};
 class Tetris {
 private:
 	const int blockShapes[MINO_MAX][4][4] = {
@@ -79,7 +74,8 @@ private:
     };
 	
 	int score;
-	int** BOARD;
+    vector<vector<int>> BOARD;
+
 	int boardWidth;
     int boardHeight;
 	struct position { int x, y; };
@@ -109,5 +105,8 @@ public:
     void gameOver();
     void resetGame();
     void setCursor(int x, int y);
+
+    //
+    void resizeBoard(int boardWidth, int boardHeight);
 
 };

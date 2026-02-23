@@ -30,10 +30,10 @@ Tetris::Tetris() {
 		}
 		else break;
 	}
-	BOARD = new int* [boardHeight];
-	for (int i = 0; i < boardHeight; i++) {
-		BOARD[i] = new int[boardWidth];
-	}
+
+	BOARD.assign(boardHeight, vector<int>(boardWidth, EMPTY));
+
+
 	resetGame();
 }
 
@@ -76,9 +76,10 @@ void Tetris::draw() {
 		}
 		cout << "                                    " << endl ;
 	}
-	setColor(7);
-	cout << endl << "현재 점수 : " << score;
-	cout << endl << "다음 블록 " << endl;
+	setColor(7); 
+	cout << "                                    " << endl;
+	cout << "현재 점수 : " << score << "                                    " << endl;
+	cout << "다음 블록 " << "                                    " << endl;
 	for (int y = 0; y < 4; y++) {
 		for (int x = 0; x < 4; x++) {
 			if (blockShapes[nextBlockType][y][x] == 1) {
@@ -89,9 +90,12 @@ void Tetris::draw() {
 				setColor(7);
 				cout << "□";
 			}
-		}		
-		cout << endl;
+		}
+		cout << "                                    " << endl;
 	}
+	cout << "▼조작 방법▼" << "                                    " << endl;
+	cout << "블록 이동: a, s, d" << "                                    " << endl;
+	cout << "블록 회전: f(시계 방향) r(시계 역방향)" << "                                    " << endl;
 }
 
 void Tetris::blockMove(int dx, int dy) {
@@ -228,8 +232,6 @@ void Tetris::rotateBlock(bool isClockwise) {
 				}
 			}
 		}
-		curRotation++;
-		if (curRotation == 4) curRotation = 0;
 	}
 }
 void Tetris::gameOver() {
