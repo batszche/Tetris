@@ -10,30 +10,30 @@ using namespace std;
 Tetris::Tetris() {
 	system("cls");
 	while (true) {
-		cout << "º¸µåÀÇ °¡·Î Å©±â¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (12~30)";
+		cout << "ë³´ë“œì˜ ê°€ë¡œ í¬ê¸°ë¥¼ ìž…ë ¥í•˜ì„¸ìš”. (12~30)";
 		cin >> boardWidth;
 		if (cin.fail() || boardWidth < 12 || boardWidth > 30) {
-			cout << "12¿¡¼­ 30 »çÀÌÀÇ ¼ýÀÚ¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä." << endl;
+			cout << "12ì—ì„œ 30 ì‚¬ì´ì˜ ìˆ«ìžë¥¼ ìž…ë ¥í•´ ì£¼ì„¸ìš”." << endl;
 			cin.clear();
 			cin.ignore(256, '\n');
 		}
 		else break;
 	}
 	while (true) {
-		cout << "º¸µåÀÇ ¼¼·Î Å©±â¸¦ ÀÔ·ÂÇÏ¼¼¿ä. (15~45)";
+		cout << "ë³´ë“œì˜ ì„¸ë¡œ í¬ê¸°ë¥¼ ìž…ë ¥í•˜ì„¸ìš”. (15~45)";
 		cin >> boardHeight;
 
 		if (cin.fail() || boardHeight < 15 || boardHeight > 45) {
-			cout << "15¿¡¼­ 30 »çÀÌÀÇ ¼ýÀÚ¸¦ ÀÔ·ÂÇØ ÁÖ¼¼¿ä." << endl;
+			cout << "15ì—ì„œ 30 ì‚¬ì´ì˜ ìˆ«ìžë¥¼ ìž…ë ¥í•´ ì£¼ì„¸ìš”." << endl;
 			cin.clear();
 			cin.ignore(256, '\n');
 		}
 		else break;
 	}
-	BOARD = new int* [boardHeight];
-	for (int i = 0; i < boardHeight; i++) {
-		BOARD[i] = new int[boardWidth];
-	}
+
+	BOARD.assign(boardHeight, vector<int>(boardWidth, EMPTY));
+
+
 	resetGame();
 }
 
@@ -55,22 +55,22 @@ void Tetris::draw() {
 			if (y >= curPos.y && y <= curPos.y + 3 && x >= curPos.x && x <= curPos.x + 3) {
 				if (nowBlock[y - curPos.y][x - curPos.x] == 1) {
 					setColor(14);
-					cout << "¡á";
+					cout << "â– ";
 					isDrawn = true;
 				}
 			}
 			if (!isDrawn) {
 				if (BOARD[y][x] == WALL) {
 					setColor(4);
-					cout << "¡ß";
+					cout << "â—†";
 				}
 				else if (BOARD[y][x] == FIXEDBLOCK) {
 					setColor(2);
-					cout << "¡å";
+					cout << "â–¼";
 				}
 				else {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 		}
@@ -78,24 +78,24 @@ void Tetris::draw() {
 	}
 	setColor(7);
 	cout << "                                    " << endl;
-	cout << "ÇöÀç Á¡¼ö : " << score << "                                    " << endl;
-	cout << "´ÙÀ½ ºí·Ï " << "                                    " << endl;
+	cout << "í˜„ìž¬ ì ìˆ˜ : " << score << "                                    " << endl;
+	cout << "ë‹¤ìŒ ë¸”ë¡ " << "                                    " << endl;
 	for (int y = 0; y < 4; y++) {
 		for (int x = 0; x < 4; x++) {
 			if (blockShapes[nextBlockType][y][x] == 1) {
 				setColor(14);
-				cout << "¡á";
+				cout << "â– ";
 			}
 			else {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 		}
 		cout << "                                    " << endl;
 	}
-	cout << "¡åÁ¶ÀÛ ¹æ¹ý¡å" << "                                    " << endl;
-	cout << "ºí·Ï ÀÌµ¿: a, s, d" << "                                    " << endl;
-	cout << "ºí·Ï È¸Àü: f(½Ã°è ¹æÇâ) r(½Ã°è ¿ª¹æÇâ)" << "                                    " << endl;
+	cout << "â–¼ì¡°ìž‘ ë°©ë²•â–¼" << "                                    " << endl;
+	cout << "ë¸”ë¡ ì´ë™: a, s, d" << "                                    " << endl;
+	cout << "ë¸”ë¡ íšŒì „: f(ì‹œê³„ ë°©í–¥) r(ì‹œê³„ ì—­ë°©í–¥)" << "                                    " << endl;
 }
 
 
@@ -233,8 +233,6 @@ void Tetris::rotateBlock(bool isClockwise) {
 				}
 			}
 		}
-		curRotation++;
-		if (curRotation == 4) curRotation = 0;
 	}
 }
 void Tetris::gameOver() {
@@ -243,11 +241,11 @@ void Tetris::gameOver() {
 	int centerY = (boardHeight / 2);
 	for (int y = 0; y < boardHeight; y++) {
 		setColor(4);
-		cout << "¡ß";
+		cout << "â—†";
 		if (y == centerY - 3 || y == centerY + 4) {
 			for (int i = 0; i < (boardWidth - 5) / 2; i++) {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 			for (int i = 0; i < 4; i++) {
 				setColor(14);
@@ -256,33 +254,33 @@ void Tetris::gameOver() {
 			if (boardWidth %2 == 1){
 				for (int i = 0; i < (boardWidth - 5) / 2-1; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 			else {
 				for (int i = 0; i < (boardWidth - 5) / 2 ; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 		}
 		else if (y == centerY - 1) {
 			for (int i = 0; i < (boardWidth - 9) / 2; i++) {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 			setColor(14);
 			cout << "GAME OVER";
 			if (boardWidth % 2 == 1) {
 				for (int i = 0; i < (boardWidth - 9) / 2; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 			else {
 				for (int i = 0; i < (boardWidth - 9) / 2 - 1; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 		}
@@ -290,20 +288,20 @@ void Tetris::gameOver() {
 			setColor(2);
 			for (int i = 0; i < (boardWidth - 7) / 2; i++) {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 			setColor(14);
 			cout << "REPLAY?";
 			if (boardWidth % 2 == 1) {
 				for (int i = 0; i < (boardWidth - 7) / 2; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 			else {
 				for (int i = 0; i < (boardWidth - 7) / 2 - 1; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 		}
@@ -311,7 +309,7 @@ void Tetris::gameOver() {
 			setColor(2);
 			for (int i = 0; i < (boardWidth - 7) / 2; i++) {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 			setColor(14);
 			cout << "(Y / N)";
@@ -319,29 +317,29 @@ void Tetris::gameOver() {
 			if (boardWidth % 2 == 1) {
 				for (int i = 0; i < (boardWidth - 7) / 2; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 			else {
 				for (int i = 0; i < (boardWidth - 7) / 2 - 1; i++) {
 					setColor(7);
-					cout << "¡à";
+					cout << "â–¡";
 				}
 			}
 		}
 		else if (y == boardHeight-1) {
 			for (int i = 0; i < boardWidth-2; i++) {
-				cout << "¡ß";
+				cout << "â—†";
 			}
 		}
 		else {
 			for (int i = 0; i < boardWidth - 2; i++) {
 				setColor(7);
-				cout << "¡à";
+				cout << "â–¡";
 			}
 		}
 		setColor(4);
-		cout << "¡ß";
+		cout << "â—†";
 		cout << "                           " << endl;
 	}
 }
