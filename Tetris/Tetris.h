@@ -19,12 +19,6 @@ enum TetrominoType {
 	MINO_MAX
 };
 
-enum curRotation {
-    ROT_0 = 0,
-    ROT_90,
-    ROT_180,
-    ROT_270
-};
 class Tetris {
 private:
 	const int blockShapes[MINO_MAX][4][4] = {
